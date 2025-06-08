@@ -31,7 +31,7 @@
         </dependency>
         <dependency>
             <groupId>com.vladsch.flexmark</groupId>
-            <artifactId>flexmark-html2md</artifactId>
+            <artifactId>flexmark-html2md-converter</artifactId>
             <version>0.64.8</version>
         </dependency>
         <dependency>
@@ -40,7 +40,7 @@
             <version>0.28.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.pgvector</groupId>
+            <groupId>io.github.pgvector</groupId>
             <artifactId>pgvector-jdbc</artifactId>
             <version>0.1.1</version>
         </dependency>
