@@ -23,6 +23,19 @@ public class DocCrawler {
     private static final Logger log = LoggerFactory.getLogger(DocCrawler.class);
 
     public static void main(String[] args) throws Exception {
+        long delayMs = 0;
+        if (args.length > 0) {
+            try {
+                delayMs = Long.parseLong(args[0]);
+                if (delayMs < 0) {
+                    log.warn("Delay must be non-negative, using 0");
+                    delayMs = 0;
+                }
+            } catch (NumberFormatException e) {
+                log.warn("Invalid delay value: {}", args[0]);
+            }
+        }
+
         Path urlsFile = Paths.get("urls.txt");
         if (!Files.exists(urlsFile)) {
             log.error("urls.txt not found");
@@ -36,6 +49,9 @@ public class DocCrawler {
             }
             try {
                 fetch(url);
+                if (delayMs > 0) {
+                    Thread.sleep(delayMs);
+                }
             } catch (Exception e) {
                 log.error("Failed to fetch {}", url, e);
             }
