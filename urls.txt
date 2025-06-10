@@ -43,4 +43,3 @@ https://github.com/langchain4j/langchain4j/blob/main/docs/docs/integrations/lang
 https://github.com/langchain4j/langchain4j/blob/main/docs/docs/integrations/language-models/qianfan.md
 https://github.com/langchain4j/langchain4j/blob/main/docs/docs/integrations/language-models/workers-ai.md
 https://github.com/langchain4j/langchain4j/blob/main/docs/docs/integrations/language-models/xinference.md
-https://github.com/langchain4j/langchain4j/blob/main/docs/docs/integrations/language-models/zhipu-ai.md
