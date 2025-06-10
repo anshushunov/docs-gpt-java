@@ -30,3 +30,19 @@ requests:
 ```bash
 mvn -q exec:java -Dexec.mainClass=com.example.docs.DocCrawler -Dexec.args="1000"
 ```
+
+## Preprocessing Markdown
+
+`PreprocessRunner` splits the downloaded Markdown into token-limited chunks.
+It reads every `*.md` under `corpus/raw`, strips YAML front matter and any
+`<nav>`, `<aside>` or `<footer>` sections, then uses LangChain4j's recursive
+splitter with a chunk size of 1024 tokens, an overlap of 128 tokens and the
+GPT-4o tokenizer. Each chunk becomes a JSON file in `corpus/chunked` containing
+`id`, `text`, `tokens`, `source`, `chunkIndex` and `totalChunks`. Progress is
+logged as `splitting {file} → {n} chunks`.
+
+Run it with:
+
+```bash
+mvn -q exec:java -Dexec.mainClass=com.example.docs.PreprocessRunner
+```
