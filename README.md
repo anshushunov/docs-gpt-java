@@ -22,3 +22,11 @@ Run it with:
 ```bash
 mvn -q exec:java -Dexec.mainClass=com.example.docs.DocCrawler
 ```
+
+You can optionally specify a delay between requests (in milliseconds) by
+passing a single argument. For example, to pause for one second between
+requests:
+
+```bash
+mvn -q exec:java -Dexec.mainClass=com.example.docs.DocCrawler -Dexec.args="1000"
+```
