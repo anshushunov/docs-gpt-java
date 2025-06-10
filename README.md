@@ -11,7 +11,7 @@ Minimal Spring Boot skeleton using JDK 21 and Maven.
 mvn spring-boot:run
 ```
 
-The project includes dependencies for LangChain4j, pgvector-jdbc and the OpenAI SDK.
+The project includes dependencies for LangChain4j (version 0.29.0 or later), pgvector-jdbc and the OpenAI SDK.
 
 ## Crawling documentation
 
