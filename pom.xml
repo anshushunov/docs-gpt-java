@@ -40,14 +40,15 @@
             <version>0.28.0</version>
         </dependency>
         <dependency>
-            <groupId>io.github.pgvector</groupId>
-            <artifactId>pgvector-jdbc</artifactId>
-            <version>0.1.1</version>
+            <groupId>com.pgvector</groupId>
+            <artifactId>pgvector</artifactId>
+            <version>0.1.6</version>
         </dependency>
         <dependency>
             <groupId>com.openai</groupId>
-            <artifactId>openai</artifactId>
-            <version>0.1.0</version>
+            <artifactId>openai-java</artifactId>
+            <version>2.7.0</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
