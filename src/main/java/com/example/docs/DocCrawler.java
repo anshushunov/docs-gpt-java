@@ -22,6 +22,14 @@ import java.util.Optional;
 public class DocCrawler {
     private static final Logger log = LoggerFactory.getLogger(DocCrawler.class);
 
+    private static String toRawGithubUrl(String url) {
+        if (url.startsWith("https://github.com/") && url.contains("/blob/")) {
+            return url.replaceFirst("https://github.com/", "https://raw.githubusercontent.com/")
+                    .replace("/blob/", "/");
+        }
+        return url;
+    }
+
     public static void main(String[] args) throws Exception {
         long delayMs = 0;
         if (args.length > 0) {
@@ -60,7 +68,10 @@ public class DocCrawler {
 
     private static void fetch(String url) throws IOException, URISyntaxException {
         log.info("Fetching {}", url);
-        Connection connection = Jsoup.connect(url).ignoreContentType(true);
+        String fetchUrl = toRawGithubUrl(url);
+        Connection connection = Jsoup.connect(fetchUrl)
+                .ignoreContentType(true)
+                .userAgent("Mozilla/5.0");
         Connection.Response response = connection.execute();
 
         String contentTypeHeader = Optional.ofNullable(response.contentType()).orElse("").toLowerCase();
@@ -71,7 +82,8 @@ public class DocCrawler {
             doc.select("nav, aside, footer").remove();
             body = FlexmarkHtmlConverter.builder().build().convert(doc.html());
             type = "html";
-        } else if (contentTypeHeader.contains("markdown")) {
+        } else if (contentTypeHeader.contains("markdown") ||
+                contentTypeHeader.contains("text/plain") && fetchUrl.endsWith(".md")) {
             body = response.body();
             type = "markdown";
         } else {
