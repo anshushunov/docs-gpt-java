@@ -1,7 +1,11 @@
 package com.example.docs;
 
 import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.document.splitter.RecursiveDocumentSplitter;
+import dev.langchain4j.data.document.DocumentSplitter;
+import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.openai.OpenAiChatModelName;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import dev.langchain4j.model.tokenization.Tokenizer;
 import dev.langchain4j.model.openai.tokenization.OpenAiTokenizer;
 import org.junit.jupiter.api.Test;
@@ -15,23 +19,21 @@ class SplitterTest {
 
     @Test
     void splitRespectsSizeAndOverlap() {
+        OpenAiTokenCountEstimator estimator = new OpenAiTokenCountEstimator(OpenAiChatModelName.GPT_4_O_2024_11_20);
+        DocumentSplitter splitter = DocumentSplitters.recursive(10, 2, estimator);
+
         Tokenizer tokenizer = OpenAiTokenizer.gpt4o();
-        RecursiveDocumentSplitter splitter = RecursiveDocumentSplitter.builder()
-                .chunkSize(10)
-                .chunkOverlap(2)
-                .tokenizer(tokenizer)
-                .build();
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 30; i++) {
             sb.append("word").append(i).append(' ');
         }
         Document doc = Document.from(sb.toString());
-        List<Document> chunks = splitter.split(doc);
+        List<TextSegment> chunks = splitter.split(doc);
         assertTrue(chunks.size() > 1);
 
-        for (Document chunk : chunks) {
-            int tokens = tokenizer.estimateTokenCountInText(chunk.text());
+        for (TextSegment chunk : chunks) {
+            int tokens = estimator.estimateTokenCountInText(chunk.text());
             assertTrue(tokens <= 10);
         }
 
