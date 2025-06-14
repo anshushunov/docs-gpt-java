@@ -22,7 +22,8 @@ class SplitterTest {
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 30; i++) {
-            sb.append("word").append(i).append(' ');
+            sb.append("word").append(i);
+            if (i < 29) sb.append(' ');
         }
         Document doc = Document.from(sb.toString());
         List<TextSegment> chunks = splitter.split(doc);
@@ -33,8 +34,8 @@ class SplitterTest {
             assertTrue(tokens <= 10);
         }
 
-        List<Integer> first = estimator.encode(chunks.get(0).text());
-        List<Integer> second = estimator.encode(chunks.get(1).text());
+        List<Integer> first = estimator.encode(chunks.get(0).text().trim());
+        List<Integer> second = estimator.encode(chunks.get(1).text().trim());
         int overlap = 2;
         List<Integer> tail = first.subList(first.size() - overlap, first.size());
         List<Integer> head = second.subList(0, overlap);
