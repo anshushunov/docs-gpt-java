@@ -1,9 +1,11 @@
 package com.example.docs;
 
 import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.document.splitter.RecursiveDocumentSplitter;
-import dev.langchain4j.model.tokenization.Tokenizer;
-import dev.langchain4j.model.openai.tokenization.OpenAiTokenizer;
+import dev.langchain4j.data.document.DocumentSplitter;
+import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.segment.TextSegment;
+import dev.langchain4j.model.openai.OpenAiChatModelName;
+import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,12 +31,9 @@ public class PreprocessRunner {
     public static void main(String[] args) throws IOException {
         Path rawDir = Paths.get("corpus/raw");
         Path outDir = Paths.get("corpus/chunked");
-        Tokenizer tokenizer = OpenAiTokenizer.gpt4o();
-        RecursiveDocumentSplitter splitter = RecursiveDocumentSplitter.builder()
-                .chunkSize(1024)
-                .chunkOverlap(128)
-                .tokenizer(tokenizer)
-                .build();
+
+        OpenAiTokenCountEstimator openAiTokenCountEstimator = new OpenAiTokenCountEstimator(OpenAiChatModelName.GPT_4_O_2024_11_20);
+        DocumentSplitter splitter = DocumentSplitters.recursive(1024, 128, openAiTokenCountEstimator);
 
         List<Path> files = new ArrayList<>();
         if (Files.exists(rawDir)) {
@@ -52,7 +51,7 @@ public class PreprocessRunner {
             text = FOOTER.matcher(text).replaceAll("");
 
             Document document = Document.from(text);
-            List<Document> chunks = splitter.split(document);
+            List<TextSegment> chunks = splitter.split(document);
             log.info("splitting {} → {} chunks", file, chunks.size());
 
             Path relative = rawDir.relativize(file);
@@ -61,8 +60,8 @@ public class PreprocessRunner {
                 baseName = baseName.substring(0, baseName.length() - 3);
             }
             for (int i = 0; i < chunks.size(); i++) {
-                Document chunk = chunks.get(i);
-                int tokens = tokenizer.estimateTokenCountInText(chunk.text());
+                TextSegment chunk = chunks.get(i);
+                int tokens = openAiTokenCountEstimator.estimateTokenCountInText(chunk.text());
                 String id = UUID.randomUUID().toString();
                 Path chunkPath = outDir.resolve(baseName + "-" + i + ".json");
                 Files.createDirectories(chunkPath.getParent());
