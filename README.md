@@ -11,7 +11,7 @@ Minimal Spring Boot skeleton using JDK 21 and Maven.
 mvn spring-boot:run
 ```
 
-The project includes dependencies for LangChain4j (version 0.29.0 or later), pgvector-jdbc and the OpenAI SDK.
+The project includes dependencies for LangChain4j (version 1.0.1 or later), pgvector-jdbc and the OpenAI SDK.
 
 ## Crawling documentation
 
@@ -35,9 +35,9 @@ mvn -q exec:java -Dexec.mainClass=com.example.docs.DocCrawler -Dexec.args="1000"
 
 `PreprocessRunner` splits the downloaded Markdown into token-limited chunks.
 It reads every `*.md` under `corpus/raw`, strips YAML front matter and any
-`<nav>`, `<aside>` or `<footer>` sections, then uses LangChain4j's recursive
-splitter with a chunk size of 1024 tokens, an overlap of 128 tokens and the
-GPT-4o tokenizer. Each chunk becomes a JSON file in `corpus/chunked` containing
+`<nav>`, `<aside>` or `<footer>` sections, then uses LangChain4j's
+`RecursiveDocumentSplitter` with a chunk size of 1024 tokens, an overlap of 128
+tokens and the GPT-4o tokenizer. Each chunk becomes a JSON file in `corpus/chunked` containing
 `id`, `text`, `tokens`, `source`, `chunkIndex` and `totalChunks`. Progress is
 logged as `splitting {file} → {n} chunks`.
 

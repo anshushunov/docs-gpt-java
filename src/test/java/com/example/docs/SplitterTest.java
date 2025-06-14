@@ -1,10 +1,9 @@
 package com.example.docs;
 
 import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.document.splitter.DocumentSplitter;
-import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.document.splitter.RecursiveDocumentSplitter;
 import dev.langchain4j.model.tokenization.Tokenizer;
-import dev.langchain4j.model.tokenization.openai.OpenAiTokenizer;
+import dev.langchain4j.model.openai.tokenization.OpenAiTokenizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,8 +15,12 @@ class SplitterTest {
 
     @Test
     void splitRespectsSizeAndOverlap() {
-        Tokenizer tokenizer = OpenAiTokenizer.GPT_4O;
-        DocumentSplitter splitter = DocumentSplitters.recursive(10, 2, tokenizer);
+        Tokenizer tokenizer = OpenAiTokenizer.gpt4o();
+        RecursiveDocumentSplitter splitter = RecursiveDocumentSplitter.builder()
+                .chunkSize(10)
+                .chunkOverlap(2)
+                .tokenizer(tokenizer)
+                .build();
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 30; i++) {

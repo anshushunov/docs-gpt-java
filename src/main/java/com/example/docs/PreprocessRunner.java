@@ -1,10 +1,9 @@
 package com.example.docs;
 
 import dev.langchain4j.data.document.Document;
-import dev.langchain4j.data.document.splitter.DocumentSplitter;
-import dev.langchain4j.data.document.splitter.DocumentSplitters;
+import dev.langchain4j.data.document.splitter.RecursiveDocumentSplitter;
 import dev.langchain4j.model.tokenization.Tokenizer;
-import dev.langchain4j.model.tokenization.openai.OpenAiTokenizer;
+import dev.langchain4j.model.openai.tokenization.OpenAiTokenizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,8 +29,12 @@ public class PreprocessRunner {
     public static void main(String[] args) throws IOException {
         Path rawDir = Paths.get("corpus/raw");
         Path outDir = Paths.get("corpus/chunked");
-        Tokenizer tokenizer = OpenAiTokenizer.GPT_4O;
-        DocumentSplitter splitter = DocumentSplitters.recursive(1024, 128, tokenizer);
+        Tokenizer tokenizer = OpenAiTokenizer.gpt4o();
+        RecursiveDocumentSplitter splitter = RecursiveDocumentSplitter.builder()
+                .chunkSize(1024)
+                .chunkOverlap(128)
+                .tokenizer(tokenizer)
+                .build();
 
         List<Path> files = new ArrayList<>();
         if (Files.exists(rawDir)) {
